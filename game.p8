@@ -3,76 +3,76 @@ version 18
 __lua__
 t = 0
 function _init()
-	ship = {
-		sp = 1,
-		x = 60,
-		y = 60,
-		health = 3,
-	}
-	bullets = {}
+ ship = {
+  sp = 1,
+  x = 60,
+  y = 60,
+  health = 3,
+ }
+ bullets = {}
  enemies = {}
  for i = 1,7 do
   add(enemies, {
    sp = 4,
    m_x = i * 16,
    m_y = 10,
-			x = -32,
-			y = -32,
-			r = 12,
+   x = -32,
+   y = -32,
+   r = 12,
   })
  end
 end
 
 function _update()
 -- ship thrusters
-	t = t + 1
-	if(t % 6 < 3) then
-		ship.sp=1
-	else
-		ship.sp=2
-	end
-	-- enemy thrusters and movement
-	for enemy in all(enemies) do
-		if(t % 20 < 10) then
-			enemy.sp=4
-		else
-			enemy.sp=5
-		end
-		enemy.x = enemy.r*sin(t/50) + enemy.m_x
-		enemy.y = enemy.r*cos(t/50) + enemy.m_y
-	end
-	-- ship movement
-	if btn(0) then ship.x-=1 end
-	if btn(1) then ship.x+=1 end
-	if btn(2) then ship.y-=1 end
-	if btn(3) then ship.y+=1 end
-	if btnp(4) then fire() end
+ t = t + 1
+ if(t % 6 < 3) then
+  ship.sp=1
+ else
+  ship.sp=2
+ end
+ -- enemy thrusters and movement
+ for enemy in all(enemies) do
+  if(t % 20 < 10) then
+   enemy.sp=4
+  else
+   enemy.sp=5
+  end
+  enemy.x = enemy.r*sin(t/50) + enemy.m_x
+  enemy.y = enemy.r*cos(t/50) + enemy.m_y
+ end
+ -- ship movement
+ if btn(0) then ship.x-=1 end
+ if btn(1) then ship.x+=1 end
+ if btn(2) then ship.y-=1 end
+ if btn(3) then ship.y+=1 end
+ if btnp(4) then fire() end
 --  bullet control
-	for b in all(bullets) do
-	 b.x+=b.dx
-	 b.y+=b.dy
-	 if b.x < 0 or b.x > 128 or b.y < 0 or b.y > 128 then
-	 	del(bullets, b)
-	 end
-	end
+ for b in all(bullets) do
+  b.x+=b.dx
+  b.y+=b.dy
+  if b.x < 0 or b.x > 128 or b.y < 0 or b.y > 128 then
+   del(bullets, b)
+  end
+ end
 end
 
 function _draw()
-	cls()
+ cls()
 -- ship
-	spr(ship.sp, ship.x, ship.y)
-	for i = 1, 4 do
-		if i <= ship.health then
-			spr(6,80+6*i,3)
-		else
-			spr(7,80+6*i,3)
-		end
-	end
+ spr(ship.sp, ship.x, ship.y)
+ for i = 1, 4 do
+  if i <= ship.health then
+   spr(6,80+6*i,3)
+  else
+   spr(7,80+6*i,3)
+  end
+ end
 -- bullet
-	for b in all(bullets) do
-		spr(b.sp, b.x, b.y)
-	end
-	print(#bullets, 9)
+ for b in all(bullets) do
+  spr(b.sp, b.x, b.y)
+ end
+ print(#bullets, 9)
  -- enemies
  for e in all(enemies) do
   spr(e.sp, e.x, e.y)
@@ -80,15 +80,15 @@ function _draw()
 end
 
 function fire()
-	-- creates a bullet and adds it to the current bullets list
-	local b = {
+ -- creates a bullet and adds it to the current bullets list
+ local b = {
  sp=3,
-	x=ship.x,
-	y=ship.y,
-	dx=0,
-	dy=-3,
-	}
-	add(bullets, b)
+ x=ship.x,
+ y=ship.y,
+ dx=0,
+ dy=-3,
+ }
+ add(bullets, b)
 end
 __gfx__
 000000000010010000100100000bb000000000000000a0000e080000060500000000000000000000000000000000000000000000000000000000000000000000
