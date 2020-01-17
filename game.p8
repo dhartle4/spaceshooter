@@ -9,6 +9,7 @@ function _init()
   y = 100,
   health = 3,
   points = 0,
+  box = {x1 = 0, y1 = 0, x2 = 7, y2 = 7},
  }
  bullets = {}
  enemies = {}
@@ -20,6 +21,7 @@ function _init()
    x = -32,
    y = -32,
    r = 12,
+   box = {x1 = 0, y1 = 0, x2 = 7, y2 = 7},
   })
  end
 end
@@ -96,12 +98,24 @@ function fire()
  y = ship.y,
  dx = 0,
  dy = -3,
+ box = {x1=2,y1=0,x2=5,y2=4}
  }
  add(bullets, b)
 end
 
-function collide(a, b)
- return false
+function collide(object_1, object_2)
+ hitbox_1 = locate_hitbox(object_1)
+ hitbox_2 = locate_hitbox(object_2)
+end
+
+function locate_hitbox(object)
+ -- finds a hitboxes location on the screen based on the passed in object
+ local box = {}
+ box.x1 = object.box.x1 + object.x
+ box.y1 = object.box.y1 + object.y
+ box.x2 = object.box.x2 + object.x
+ box.y2 = object.box.y2 + object.y
+ return box
 end
 __gfx__
 000000000010010000100100000bb000000000000000a0000e080000060500000000000000000000000000000000000000000000000000000000000000000000
