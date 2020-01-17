@@ -98,18 +98,24 @@ function fire()
  y = ship.y,
  dx = 0,
  dy = -3,
- box = {x1=2,y1=0,x2=5,y2=4}
- }
+ box = {x1 = 2, y1 = 0, x2 = 5, y2 = 4},
+}
  add(bullets, b)
 end
 
 function collide(object_1, object_2)
- hitbox_1 = locate_hitbox(object_1)
- hitbox_2 = locate_hitbox(object_2)
+ -- Gets the hitboxes of the passed on objects and checks if they are colliding
+ local hitbox_1 = locate_hitbox(object_1)
+ local hitbox_2 = locate_hitbox(object_2)
+ if hitbox_1.x1 > hitbox_2.x2 or hitbox_1.y1 > hitbox_2.y2 or
+    hitbox_2.x1 > hitbox_1.x2 or hitbox_2.y1 > hitbox_1.y2 then
+  return false
+ end
+ return true
 end
 
 function locate_hitbox(object)
- -- finds a hitboxes location on the screen based on the passed in object
+ -- finds a hitboxes locaticon on the screen based on the passed in object
  local box = {}
  box.x1 = object.box.x1 + object.x
  box.y1 = object.box.y1 + object.y
