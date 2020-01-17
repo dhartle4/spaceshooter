@@ -1,13 +1,14 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
-t = 0
 function _init()
+ t = 0
  ship = {
   sp = 1,
   x = 60,
-  y = 60,
+  y = 100,
   health = 3,
+  points = 0,
  }
  bullets = {}
  enemies = {}
@@ -24,13 +25,18 @@ function _init()
 end
 
 function _update()
--- ship thrusters
  t = t + 1
+-- ship thrusters and controls
  if(t % 6 < 3) then
   ship.sp=1
  else
   ship.sp=2
  end
+ if btn(0) then ship.x-=1 end
+ if btn(1) then ship.x+=1 end
+ if btn(2) then ship.y-=1 end
+ if btn(3) then ship.y+=1 end
+ if btnp(4) then fire() end
  -- enemy thrusters and movement
  for enemy in all(enemies) do
   if(t % 20 < 10) then
@@ -41,12 +47,6 @@ function _update()
   enemy.x = enemy.r*sin(t/50) + enemy.m_x
   enemy.y = enemy.r*cos(t/50) + enemy.m_y
  end
- -- ship movement
- if btn(0) then ship.x-=1 end
- if btn(1) then ship.x+=1 end
- if btn(2) then ship.y-=1 end
- if btn(3) then ship.y+=1 end
- if btnp(4) then fire() end
 --  bullet control
  for b in all(bullets) do
   b.x+=b.dx
@@ -54,12 +54,19 @@ function _update()
   if b.x < 0 or b.x > 128 or b.y < 0 or b.y > 128 then
    del(bullets, b)
   end
+  for enemy in all(enemies) do
+   if collide(enemy, b) then
+    del (enemies, enemy)
+    ship.points += 1
+   end
+  end
  end
 end
 
 function _draw()
  cls()
 -- ship
+ print(ship.points, 9)
  spr(ship.sp, ship.x, ship.y)
  for i = 1, 4 do
   if i <= ship.health then
@@ -72,23 +79,29 @@ function _draw()
  for b in all(bullets) do
   spr(b.sp, b.x, b.y)
  end
- print(#bullets, 9)
  -- enemies
- for e in all(enemies) do
-  spr(e.sp, e.x, e.y)
+ for enemy in all(enemies) do
+  spr(enemy.sp, enemy.x, enemy.y)
+  if collide(enemy, ship) then
+   --todo
+  end
  end
 end
 
 function fire()
  -- creates a bullet and adds it to the current bullets list
  local b = {
- sp=3,
- x=ship.x,
- y=ship.y,
- dx=0,
- dy=-3,
+ sp = 3,
+ x = ship.x,
+ y = ship.y,
+ dx = 0,
+ dy = -3,
  }
  add(bullets, b)
+end
+
+function collide(a, b)
+ return false
 end
 __gfx__
 000000000010010000100100000bb000000000000000a0000e080000060500000000000000000000000000000000000000000000000000000000000000000000
