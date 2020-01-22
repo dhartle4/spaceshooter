@@ -1,6 +1,9 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
+
+-- INIT AND GAMESTATE CONTROLLERS ----------------------------------------------
+
 function _init()
  t = 0
  ship = {
@@ -24,11 +27,24 @@ function _init()
    box = {x1 = 0, y1 = 0, x2 = 7, y2 = 7},
   })
  end
+ start_game()
 end
 
-function _update()
+function start_game()
+ _update = run_update
+ _draw = run_draw
+end
+
+function end_game()
+ _update = end_update
+ _draw = end_draw
+end
+
+-- GAMESTATE FUNCTIONS ---------------------------------------------------------
+
+function run_update()
  t = t + 1
--- ship thrusters and controls
+ -- ship thrusters and controls
  if(t % 6 < 3) then
   ship.sp=1
  else
@@ -49,7 +65,7 @@ function _update()
   enemy.x = enemy.r*sin(t/50) + enemy.m_x
   enemy.y = enemy.r*cos(t/50) + enemy.m_y
  end
---  bullet control
+ --  bullet control
  for b in all(bullets) do
   b.x+=b.dx
   b.y+=b.dy
@@ -66,9 +82,13 @@ function _update()
  end
 end
 
-function _draw()
+function end_update()
+ -- TODO
+end
+
+function run_draw()
  cls()
--- ship
+ -- ship
  print(ship.points, 9)
  spr(ship.sp, ship.x, ship.y)
  for i = 1, 4 do
@@ -78,7 +98,7 @@ function _draw()
    spr(7,80+6*i,3)
   end
  end
--- bullet
+ -- bullet
  for b in all(bullets) do
   spr(b.sp, b.x, b.y)
  end
@@ -86,10 +106,17 @@ function _draw()
  for enemy in all(enemies) do
   spr(enemy.sp, enemy.x, enemy.y)
   if collide(enemy, ship) then
-   --todo
+   -- TODO
   end
  end
 end
+
+function end_draw()
+ cls()
+ print("GAME OVER :(",50,50,4)
+end
+
+-- GAMEPLAY FUNCTIONS ----------------------------------------------------------
 
 function fire()
  -- creates a bullet and adds it to the current bullets list
@@ -105,7 +132,7 @@ function fire()
 end
 
 function collide(object_1, object_2)
- -- Gets the hitboxes of the passed on objects and checks if they are colliding
+ -- gets the hitboxes of the passed on objects and checks if they are colliding
  local hitbox_1 = locate_hitbox(object_1)
  local hitbox_2 = locate_hitbox(object_2)
  if hitbox_1.x1 > hitbox_2.x2 or hitbox_1.y1 > hitbox_2.y2 or
@@ -124,6 +151,9 @@ function locate_hitbox(object)
  box.y2 = object.box.y2 + object.y
  return box
 end
+
+-- SPRITES ---------------------------------------------------------------------
+
 __gfx__
 000000000010010000100100000bb000000000000000a0000e080000060500000000000000000000000000000000000000000000000000000000000000000000
 000000000010010000100100000b300050000005500a0005ee888000665550000000000000000000000000000000000000000000000000000000000000000000
