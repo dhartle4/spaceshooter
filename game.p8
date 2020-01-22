@@ -59,6 +59,7 @@ function _update()
   for enemy in all(enemies) do
    if collide(enemy, b) then
     del (enemies, enemy)
+    del (bullets, b)
     ship.points += 1
    end
   end
@@ -98,8 +99,8 @@ function fire()
  y = ship.y,
  dx = 0,
  dy = -3,
- box = {x1 = 2, y1 = 0, x2 = 5, y2 = 4},
-}
+ box = {x1 = 3, y1 = 0, x2 = 4, y2 = 3},
+ }
  add(bullets, b)
 end
 
